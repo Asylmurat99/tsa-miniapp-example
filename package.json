@@ -1,0 +1,10 @@
+{
+  "name": "tsa-miniapp-example",
+  "private": true,
+  "workspaces": ["web", "docs"],
+  "scripts": {
+    "build": "npm run build -w web && npm run build -w docs",
+    "docs:dev": "npm run dev -w docs",
+    "web:dev": "npm run dev -w web"
+  }
+}

@@ -1,0 +1,47 @@
+{
+  "secret": "my_secret_key",
+  "cases": [
+    {
+      "name": "launch customer",
+      "sign_field": "hash",
+      "fields": {
+        "app_id": "34d5810c-7c36-11eb-82e7-f2189812cd57",
+        "auth": "customer",
+        "auth_date": "1755388800",
+        "nonce": "7c9e6679-7425-40de-944b-e07fc1f90ae7",
+        "platform": "ios",
+        "start_param": "channels",
+        "user": "{\"id\":\"3f1a9c40-77ad-4e0f-9c3d-11c2a0f5e881\"}",
+        "hash": "72408ed73eebbc71d35b750b683eabdd8825916925350e7eb5ffb67e3ca74f12"
+      },
+      "raw": "app_id=34d5810c-7c36-11eb-82e7-f2189812cd57&auth=customer&auth_date=1755388800&nonce=7c9e6679-7425-40de-944b-e07fc1f90ae7&platform=ios&start_param=channels&user=%7B%22id%22%3A%223f1a9c40-77ad-4e0f-9c3d-11c2a0f5e881%22%7D&hash=72408ed73eebbc71d35b750b683eabdd8825916925350e7eb5ffb67e3ca74f12"
+    },
+    {
+      "name": "launch guest",
+      "sign_field": "hash",
+      "fields": {
+        "app_id": "34d5810c-7c36-11eb-82e7-f2189812cd57",
+        "auth": "guest",
+        "auth_date": "1755388800",
+        "nonce": "7c9e6679-7425-40de-944b-e07fc1f90ae7",
+        "platform": "ios",
+        "start_param": "channels",
+        "hash": "f5dd78e4c8d5bd585ced48e3b21b552c9d3e5448646d1d0469cc2ec288cf5bb6"
+      },
+      "raw": "app_id=34d5810c-7c36-11eb-82e7-f2189812cd57&auth=guest&auth_date=1755388800&nonce=7c9e6679-7425-40de-944b-e07fc1f90ae7&platform=ios&start_param=channels&hash=f5dd78e4c8d5bd585ced48e3b21b552c9d3e5448646d1d0469cc2ec288cf5bb6"
+    },
+    {
+      "name": "getPhone envelope",
+      "sign_field": "sign",
+      "fields": {
+        "app_id": "34d5810c-7c36-11eb-82e7-f2189812cd57",
+        "auth_date": "1756715400",
+        "nonce": "7c9e6679-7425-40de-944b-e07fc1f90ae7",
+        "user": "{\"id\":\"3f1a9c40-77ad-4e0f-9c3d-11c2a0f5e881\"}",
+        "phone": "7011234567",
+        "sign": "2faf04cc47bef45ce6607a20d3703b101730b6ceb602295e3b8c818e2bc4bd83"
+      },
+      "json": "{\"app_id\":\"34d5810c-7c36-11eb-82e7-f2189812cd57\",\"auth_date\":1756715400,\"nonce\":\"7c9e6679-7425-40de-944b-e07fc1f90ae7\",\"user\":\"{\\\"id\\\":\\\"3f1a9c40-77ad-4e0f-9c3d-11c2a0f5e881\\\"}\",\"phone\":\"7011234567\",\"sign\":\"2faf04cc47bef45ce6607a20d3703b101730b6ceb602295e3b8c818e2bc4bd83\"}"
+    }
+  ]
+}
