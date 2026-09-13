@@ -18,7 +18,12 @@ cp .env.example .env && set -a && source .env && set +a && go run ./server
 go run ./server -sign -sign-user 3f1a9c40-77ad-4e0f-9c3d-11c2a0f5e881 -sign-scope phone:read
 ```
 
-Подставьте напечатанную строку в адрес `http://localhost:8080/app/#tsaWebAppData=<строка, закодированная процентами>`. Мини-апка отправит её своему серверу, тот проверит подпись и покажет, кто пришёл.
+```bash
+go run ./server -sign -sign-user 3f1a9c40-77ad-4e0f-9c3d-11c2a0f5e881 -sign-scope phone:read \
+  | python3 -c 'import sys, urllib.parse; print("http://localhost:8080/app/#tsaWebAppData=" + urllib.parse.quote(sys.stdin.read().strip(), safe=""))'
+```
+
+Вторая команда сразу печатает готовый адрес — откройте его в браузере. Мини-апка отправит контекст своему серверу, тот проверит подпись и покажет, кто пришёл.
 
 ## Первый экран из приложения
 

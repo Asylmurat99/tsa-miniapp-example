@@ -11,7 +11,7 @@ import (
 )
 
 func main() {
-	signGuest := flag.Bool("sign", false, "print a freshly signed guest launch context and exit")
+	signGuest := flag.Bool("sign", false, "print a freshly signed launch context (guest by default) and exit")
 	signUser := flag.String("sign-user", "", "with -sign: partner user id to embed as a customer context")
 	signScope := flag.String("sign-scope", "", "with -sign-user: scope list, e.g. phone:read")
 	flag.Parse()

@@ -84,9 +84,13 @@ func (a *api) createSession(w http.ResponseWriter, r *http.Request) {
 	}
 	// #endregion auth
 
+	// Behind a tunnel or reverse proxy TLS terminates before this process, so
+	// r.TLS is nil on an https page. The forwarded header fills that gap; a real
+	// deployment should trust it only when it comes from its own proxy.
+	secure := r.TLS != nil || r.Header.Get("X-Forwarded-Proto") == "https"
 	http.SetCookie(w, &http.Cookie{
 		Name: cookieName, Value: sess.ID, Path: "/",
-		HttpOnly: true, SameSite: http.SameSiteLaxMode, Secure: r.TLS != nil,
+		HttpOnly: true, SameSite: http.SameSiteLaxMode, Secure: secure,
 	})
 	writeJSON(w, http.StatusOK, toResponse(sess))
 }
