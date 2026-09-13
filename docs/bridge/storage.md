@@ -8,9 +8,9 @@ storage.getItem: (keyName: string) => Promise<string | null>
 storage.clear:   () => Promise<void>
 ```
 
-- `setItem` — записывает значение. Значение — строка; объекты сериализуйте сами.
-- `getItem` — читает значение. `null`, если ключа нет.
-- `clear` — удаляет все ключи вашей мини-апки.
+- `setItem` - записывает значение. Значение - строка; объекты сериализуйте сами.
+- `getItem` - читает значение. `null`, если ключа нет.
+- `clear` - удаляет все ключи вашей мини-апки.
 
 ```js
 await bridge.storage.setItem('theme', 'dark');

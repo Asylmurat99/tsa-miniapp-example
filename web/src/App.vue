@@ -73,7 +73,7 @@ async function getPhone() {
     <section v-if="session">
       <p v-if="session.auth === 'customer'">Signed in as <code>{{ session.user_id }}</code></p>
       <p v-else>Guest visit. Nothing is known about the visitor.</p>
-      <p>Scope: <code>{{ session.scope.join(', ') || '—' }}</code></p>
+      <p>Scope: <code>{{ session.scope.join(', ') || '-' }}</code></p>
       <button v-if="session.auth === 'customer' && session.scope.includes('phone:read')" @click="getPhone">
         Get phone number
       </button>
