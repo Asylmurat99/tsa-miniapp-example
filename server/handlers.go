@@ -65,6 +65,7 @@ func (a *api) createSession(w http.ResponseWriter, r *http.Request) {
 		scope = strings.Split(fields["scope"], ",")
 	}
 
+	// #region auth
 	var sess *session
 	switch fields["auth"] {
 	case "customer":
@@ -81,6 +82,7 @@ func (a *api) createSession(w http.ResponseWriter, r *http.Request) {
 		a.reject(w, "session", ErrMalformed, fields)
 		return
 	}
+	// #endregion auth
 
 	http.SetCookie(w, &http.Cookie{
 		Name: cookieName, Value: sess.ID, Path: "/",
@@ -97,6 +99,8 @@ func (a *api) me(w http.ResponseWriter, r *http.Request) {
 	}
 	writeJSON(w, http.StatusOK, toResponse(sess))
 }
+
+// #region phone
 
 // phone takes the getPhone envelope whole and verifies it like the launch
 // context, with sign as the signature field. The user inside must be the
@@ -129,6 +133,8 @@ func (a *api) phone(w http.ResponseWriter, r *http.Request) {
 	}
 	writeJSON(w, http.StatusOK, map[string]string{"phone": fields["phone"]})
 }
+
+// #endregion phone
 
 func (a *api) currentSession(r *http.Request) (*session, bool) {
 	c, err := r.Cookie(cookieName)

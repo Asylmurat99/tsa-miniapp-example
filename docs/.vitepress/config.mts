@@ -7,9 +7,6 @@ export default defineConfig({
   // Served by the Go server from docs/.vitepress/dist at /; .html links stay
   // so a plain file server resolves them.
   cleanUrls: false,
-  // Sidebar and nav link to pages added in Task 4.2; until they exist the
-  // dead-link checker would otherwise fail the build.
-  ignoreDeadLinks: true,
   themeConfig: {
     nav: [
       { text: 'Руководство', link: '/' },

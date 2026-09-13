@@ -135,6 +135,8 @@ type Verifier struct {
 	Now    func() time.Time
 }
 
+// #region verify
+
 // Verify runs the checks in the order the guide lists them. The signature
 // goes first: until it holds, no field means anything.
 func (v Verifier) Verify(fields Fields, signKey string) error {
@@ -160,3 +162,5 @@ func (v Verifier) Verify(fields Fields, signKey string) error {
 	}
 	return nil
 }
+
+// #endregion verify

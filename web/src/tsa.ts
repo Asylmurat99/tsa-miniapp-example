@@ -41,6 +41,7 @@ export function inShell(): boolean {
   return bridge.isSupported();
 }
 
+// #region phone
 export type PhoneOutcome =
   | { kind: 'envelope'; envelope: GetPhoneResponse }
   | { kind: 'unavailable' } // subscriber has no confirmed number: ask for it manually
@@ -69,3 +70,4 @@ export async function requestPhone(): Promise<PhoneOutcome> {
     }
   }
 }
+// #endregion phone
