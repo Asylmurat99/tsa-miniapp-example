@@ -16,18 +16,17 @@ npm install @indigico/tsa-bridge@2.3.0
 | [`closeMiniApp`](/bridge/lifecycle) | Закрывает мини-апку, с учётом подтверждения ниже |
 | [`enableClosingConfirmation` / `disableClosingConfirmation`](/bridge/lifecycle) | Диалог подтверждения при закрытии |
 | [`enableSwipeBack` / `disableSwipeBack`](/bridge/lifecycle) | Разрешить или запретить закрытие жестом вниз |
-| [`setTabBarVisible`](/bridge/lifecycle) | Скрыть или показать нативный футер контейнера |
 | [`openExternalUrl(url)`](/bridge/system) | Открыть ссылку во внешнем браузере |
 | [`share(text)`](/bridge/system) | Системное меню «Поделиться» |
 | [`copyToClipboard(text)`](/bridge/system) | Копирование в буфер |
 | [`storage.setItem` / `getItem` / `clear`](/bridge/storage) | Локальное хранилище, своё у каждой мини-апки |
 | [`getPhone()`](/bridge/get-phone) | Подписанный конверт с номером абонента. Требует права `phone:read` |
 
-Высота, которую перекрывают нативный футер и системная полоса, лежит в CSS-переменной `--tsa-bottom-inset` и обновляется на лету — нижний отступ страницы считайте от неё.
+Высота, которую перекрывают нативный футер и системная полоса, лежит в CSS-переменной `--tsa-bottom-inset` и обновляется на лету — нижний отступ страницы считайте от неё. Самим футером мини-апка не управляет: [жизненный цикл](/bridge/lifecycle).
 
 ## Объявлено в SDK, в приложении не реализовано
 
-Эти методы есть в типах SDK, и вызов не падает. Приложение отвечает пустым значением, строкой `"not_implemented"` или ошибкой — но действие не выполняется. Ни один из ответов ниже не подтверждает, что что-то произошло.
+Эти методы есть в типах SDK, но действие не выполняется. Часть отвечает пустым значением или строкой `"not_implemented"` — промис при этом разрешается, и успешным этот ответ не является. Часть отвечает ошибкой, то есть отклоняет промис: такие вызовы оборачивайте в `try`. Ни один из ответов ниже не подтверждает, что что-то произошло.
 
 | Метод | Что отвечает |
 |---|---|
@@ -56,6 +55,7 @@ npm install @indigico/tsa-bridge@2.3.0
 | `setCustomBackArrowMode` | `"success"`, режим не меняется |
 | `getCustomBackArrowMode` | `false` |
 | `setCustomBackArrowVisible` | `"success"`, стрелка не появляется |
+| `setTabBarVisible` | `"success"`, футер контейнера не меняется |
 | `enableNotifications` | `{}` |
 | `disableNotifications` | `{}` |
 | `enableScreenCapture` | `null` |
