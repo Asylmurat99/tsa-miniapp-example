@@ -1,38 +1,28 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue';
+import { lang, languages, setLang, t } from './i18n';
 import { inShell, readInitData, requestPhone, stripFragment } from './tsa';
 
 type Session = { auth: 'customer' | 'guest'; user_id: string | null; scope: string[] };
+type MessageKey = 'rejected' | 'openFromApp' | 'onlyInsideApp' | 'backendRejected' | 'unavailable' | 'denied';
+// A message is stored as a key plus the raw reason, so switching the language re-renders it.
+type Message = { kind: 'hint' | 'error'; key: MessageKey; reason?: string } | { kind: 'error'; text: string };
 
 const session = ref<Session | null>(null);
 const phone = ref<string | null>(null);
 const busy = ref(false);
-const message = ref('');
-// Errors come from the bridge or the backend; hints explain what the demo cannot do here.
-const messageKind = ref<'hint' | 'error'>('hint');
+const message = ref<Message | null>(null);
 
 const isCustomer = computed(() => session.value?.auth === 'customer');
 const canRequestPhone = computed(() => isCustomer.value && session.value!.scope.includes('phone:read'));
 
-const highlights = [
-  {
-    title: 'Verified launch context',
-    text: 'The app signs who opened the mini app. The backend checks the signature before trusting it.',
-  },
-  {
-    title: 'Guest mode',
-    text: 'Visitors without a Telecom account still get in. The context just carries no identity.',
-  },
-  {
-    title: 'Phone sharing',
-    text: 'With the phone:read grant the mini app asks the app for the confirmed number.',
-  },
-];
-
-function say(kind: 'hint' | 'error', text: string) {
-  messageKind.value = kind;
-  message.value = text;
-}
+const messageText = computed(() => {
+  const m = message.value;
+  if (!m) return '';
+  if ('text' in m) return m.text;
+  const entry = t.value[m.key];
+  return typeof entry === 'function' ? entry(m.reason ?? '') : entry;
+});
 
 async function api<T>(path: string, init?: RequestInit): Promise<T> {
   const res = await fetch(path, init);
@@ -55,18 +45,16 @@ onMounted(async () => {
       session.value = await api<Session>('/api/me');
     }
   } catch (e) {
-    if (initData) {
-      say('error', `The app rejected the launch context: ${(e as Error).message}. Reopen the mini app.`);
-    } else {
-      say('hint', 'Open this page from the Telecom app to sign in.');
-    }
+    message.value = initData
+      ? { kind: 'error', key: 'rejected', reason: (e as Error).message }
+      : { kind: 'hint', key: 'openFromApp' };
   }
 });
 
 async function getPhone() {
-  message.value = '';
+  message.value = null;
   if (!inShell()) {
-    say('hint', 'getPhone works only inside the Telecom app.');
+    message.value = { kind: 'hint', key: 'onlyInsideApp' };
     return;
   }
   busy.value = true;
@@ -82,17 +70,17 @@ async function getPhone() {
           });
           phone.value = res.phone;
         } catch (e) {
-          say('error', `Backend rejected the envelope: ${(e as Error).message}`);
+          message.value = { kind: 'error', key: 'backendRejected', reason: (e as Error).message };
         }
         break;
       case 'unavailable':
-        say('hint', 'No confirmed number for this subscriber. Ask for it in your own form.');
+        message.value = { kind: 'hint', key: 'unavailable' };
         break;
       case 'denied':
-        say('error', 'phone:read is not granted to this mini app, or the visitor is a guest.');
+        message.value = { kind: 'error', key: 'denied' };
         break;
       case 'error':
-        say('error', outcome.message);
+        message.value = { kind: 'error', text: outcome.message };
     }
   } finally {
     busy.value = false;
@@ -107,13 +95,27 @@ async function getPhone() {
         <div class="brand">
           <span class="mark" aria-hidden="true">S</span>
           <div>
-            <h1>Sample MiniApp</h1>
-            <p class="tagline">Reference integration for Telecom mini apps</p>
+            <h1>{{ t.title }}</h1>
+            <p class="tagline">{{ t.tagline }}</p>
           </div>
         </div>
-        <span v-if="session" class="badge" :class="session.auth">
-          {{ isCustomer ? 'Subscriber' : 'Guest' }}
-        </span>
+        <div class="hero-side">
+          <div class="lang-switch" role="group" aria-label="Language">
+            <button
+              v-for="l in languages"
+              :key="l.code"
+              type="button"
+              :class="{ active: l.code === lang }"
+              :aria-pressed="l.code === lang"
+              @click="setLang(l.code)"
+            >
+              {{ l.label }}
+            </button>
+          </div>
+          <span v-if="session" class="badge" :class="session.auth">
+            {{ isCustomer ? t.subscriber : t.guest }}
+          </span>
+        </div>
       </div>
     </header>
 
@@ -123,49 +125,47 @@ async function getPhone() {
           <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4" /><path d="M4 20c0-4 3.6-6 8-6s8 2 8 6" /></svg>
         </div>
         <div class="visitor-text">
-          <p class="visitor-title">{{ isCustomer ? 'Signed in via Telecom' : 'Browsing as guest' }}</p>
+          <p class="visitor-title">{{ isCustomer ? t.signedIn : t.browsingAsGuest }}</p>
           <code v-if="isCustomer" class="pseudonym">{{ session.user_id }}</code>
-          <p v-else class="muted">The app shared no identity for this visit.</p>
+          <p v-else class="muted">{{ t.noIdentity }}</p>
           <div class="chips">
             <span v-for="s in session.scope" :key="s" class="chip">
               <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" /></svg>
               {{ s }}
             </span>
-            <span v-if="session.scope.length === 0" class="chip empty">no permissions</span>
+            <span v-if="session.scope.length === 0" class="chip empty">{{ t.noPermissions }}</span>
           </div>
         </div>
       </section>
 
       <section v-if="session" class="card action fade">
-        <h2>Try the bridge</h2>
+        <h2>{{ t.tryBridge }}</h2>
         <template v-if="canRequestPhone">
-          <p class="muted">Ask the app for the confirmed phone number of this subscriber.</p>
+          <p class="muted">{{ t.askPhone }}</p>
           <button class="primary" :disabled="busy" @click="getPhone">
             <span v-if="busy" class="spinner" aria-hidden="true"></span>
-            {{ busy ? 'Waiting for the app' : 'Get phone number' }}
+            {{ busy ? t.waiting : t.getPhone }}
           </button>
           <Transition name="pop">
             <div v-if="phone" class="phone-card">
               <span class="phone-label">
                 <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" /></svg>
-                Confirmed by Telecom
+                {{ t.confirmed }}
               </span>
               <code class="phone">{{ phone }}</code>
             </div>
           </Transition>
         </template>
-        <p v-else-if="isCustomer" class="muted">
-          Phone sharing needs the phone:read grant. This mini app does not have it.
-        </p>
-        <p v-else class="muted">Sign in to the Telecom app to unlock phone sharing.</p>
+        <p v-else-if="isCustomer" class="muted">{{ t.needsGrant }}</p>
+        <p v-else class="muted">{{ t.signInToUnlock }}</p>
       </section>
 
-      <p v-if="message" class="notice fade" :class="messageKind">{{ message }}</p>
+      <p v-if="message" class="notice fade" :class="message.kind">{{ messageText }}</p>
 
       <section class="card fade">
-        <h2>What this sample shows</h2>
+        <h2>{{ t.showsTitle }}</h2>
         <ul class="highlights">
-          <li v-for="h in highlights" :key="h.title">
+          <li v-for="h in t.highlights" :key="h.title">
             <span class="dot" aria-hidden="true"></span>
             <div>
               <p class="highlight-title">{{ h.title }}</p>
@@ -176,7 +176,7 @@ async function getPhone() {
       </section>
 
       <footer class="footer">
-        Built on the Telecom bridge. <a href="/" target="_blank" rel="noopener">Read the guide</a>
+        {{ t.footer }} <a href="/" target="_blank" rel="noopener">{{ t.readGuide }}</a>
       </footer>
     </main>
   </div>
@@ -289,6 +289,39 @@ p {
   font-size: 13px;
   opacity: 0.8;
   margin-top: 2px;
+}
+
+.hero-side {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+  flex: none;
+}
+
+.lang-switch {
+  display: inline-flex;
+  padding: 3px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.24);
+}
+
+.lang-switch button {
+  border: 0;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.75);
+  font: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 4px 9px;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.lang-switch button.active {
+  background: #ffffff;
+  color: var(--hero-from);
 }
 
 .badge {
