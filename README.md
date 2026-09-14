@@ -18,6 +18,6 @@
 
 ## Проверить подпись без приложения
 
-    go run ./server -sign -sign-user 3f1a9c40-77ad-4e0f-9c3d-11c2a0f5e881 -sign-scope phone:read
+    go run ./server -sign -sign-user 3f1a9c40-77ad-4e0f-9c3d-11c2a0f5e881
 
-печатает свежеподписанный контекст. Откройте `http://localhost:8080/app/#tsaWebAppData=<контекст, закодированный процентами>`.
+печатает свежеподписанный контекст абонента; значение `-sign-user` становится полем `user.id`, по которому сервер поднимает сессию. Откройте `http://localhost:8080/app/#tsaWebAppData=<контекст, закодированный процентами>`.

@@ -126,7 +126,10 @@ async function getPhone() {
         </div>
         <div class="visitor-text">
           <p class="visitor-title">{{ isCustomer ? t.signedIn : t.browsingAsGuest }}</p>
-          <code v-if="isCustomer" class="pseudonym">{{ session.user_id }}</code>
+          <template v-if="isCustomer">
+            <code class="pseudonym">{{ session.user_id }}</code>
+            <p class="muted">{{ t.userIdHint }}</p>
+          </template>
           <p v-else class="muted">{{ t.noIdentity }}</p>
           <div class="chips">
             <span v-for="s in session.scope" :key="s" class="chip">

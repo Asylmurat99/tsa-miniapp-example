@@ -110,6 +110,11 @@ func (a *api) me(w http.ResponseWriter, r *http.Request) {
 // context, with sign as the signature field. The user inside must be the
 // user of the current session: an envelope is proof about one subscriber,
 // and the page could otherwise present someone else's.
+//
+// The number is contact data, not an account key. A subscriber can change
+// it, and the same user id then arrives with a different phone. A real
+// backend stores it on the account found by the session's user id and
+// overwrites the previous value.
 func (a *api) phone(w http.ResponseWriter, r *http.Request) {
 	sess, ok := a.currentSession(r)
 	if !ok {

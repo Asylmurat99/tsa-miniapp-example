@@ -26,7 +26,7 @@ features:
     link: /customer-and-guest
     linkText: Два режима
   - title: Номер телефона
-    details: С правом phone:read вы получаете подтверждённый номер абонента через мост, без собственной формы и SMS.
+    details: С правом phone:read вы получаете подтверждённый номер абонента через мост, без собственной формы и SMS. Ключ учётной записи при этом user.id, а не номер.
     link: /bridge/get-phone
     linkText: getPhone
   - title: Проверка на пяти языках
