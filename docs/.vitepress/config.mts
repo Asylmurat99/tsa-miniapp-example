@@ -7,9 +7,11 @@ export default defineConfig({
   // Served by the Go server from docs/.vitepress/dist at /; .html links stay
   // so a plain file server resolves them.
   cleanUrls: false,
+  head: [['link', { rel: 'icon', type: 'image/svg+xml', href: '/logo.svg' }]],
   themeConfig: {
+    logo: '/logo.svg',
     nav: [
-      { text: 'Руководство', link: '/' },
+      { text: 'Руководство', link: '/quick-start' },
       { text: 'Методы моста', link: '/bridge/' },
       { text: 'Пример', link: 'https://github.com/Asylmurat99/tsa-miniapp-example' },
     ],
@@ -17,7 +19,7 @@ export default defineConfig({
       {
         text: 'Начало',
         items: [
-          { text: 'Быстрый старт', link: '/' },
+          { text: 'Быстрый старт', link: '/quick-start' },
           { text: 'Как это работает', link: '/how-it-works' },
           { text: 'Что вы присылаете и что получаете', link: '/onboarding' },
         ],
@@ -52,5 +54,9 @@ export default defineConfig({
     ],
     outline: { label: 'На этой странице' },
     docFooter: { prev: 'Назад', next: 'Дальше' },
+    footer: {
+      message: 'Пример открыт на <a href="https://github.com/Asylmurat99/tsa-miniapp-example">GitHub</a>.',
+      copyright: 'Версия контракта 09.2026',
+    },
   },
 });
