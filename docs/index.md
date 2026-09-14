@@ -1,11 +1,14 @@
 # Быстрый старт
 
-Три команды поднимают этот сайт и рабочую мини-апку на вашей машине.
+Несколько команд поднимают этот сайт и рабочую мини-апку на вашей машине.
 
 ```bash
-git clone https://github.com/Asylmurat99/tsa-miniapp-example && cd tsa-miniapp-example
+git clone https://github.com/Asylmurat99/tsa-miniapp-example
+cd tsa-miniapp-example
 npm ci && npm run build
-cp .env.example .env && set -a && source .env && set +a && go run ./server
+cp .env.example .env
+set -a && source .env && set +a
+go run ./server
 ```
 
 Откройте `http://localhost:8080/` - это тот же сайт, который вы читаете. Мини-апка живёт на `http://localhost:8080/app/`.
@@ -15,12 +18,18 @@ cp .env.example .env && set -a && source .env && set +a && go run ./server
 Приложение открывает мини-апку с подписанным контекстом во фрагменте адреса. Пока у вас нет секрета, контекст можно подписать локально тестовым:
 
 ```bash
-go run ./server -sign -sign-user 3f1a9c40-77ad-4e0f-9c3d-11c2a0f5e881 -sign-scope phone:read
+go run ./server -sign \
+  -sign-user 3f1a9c40-77ad-4e0f-9c3d-11c2a0f5e881 \
+  -sign-scope phone:read
 ```
 
 ```bash
-go run ./server -sign -sign-user 3f1a9c40-77ad-4e0f-9c3d-11c2a0f5e881 -sign-scope phone:read \
-  | python3 -c 'import sys, urllib.parse; print("http://localhost:8080/app/#tsaWebAppData=" + urllib.parse.quote(sys.stdin.read().strip(), safe=""))'
+go run ./server -sign \
+  -sign-user 3f1a9c40-77ad-4e0f-9c3d-11c2a0f5e881 \
+  -sign-scope phone:read \
+  | python3 -c 'import sys, urllib.parse
+print("http://localhost:8080/app/#tsaWebAppData="
+  + urllib.parse.quote(sys.stdin.read().strip(), safe=""))'
 ```
 
 Вторая команда сразу печатает готовый адрес - откройте его в браузере. Мини-апка отправит контекст своему серверу, тот проверит подпись и покажет, кто пришёл.

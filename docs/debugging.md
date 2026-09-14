@@ -5,13 +5,18 @@
 Пока мини-апку некому запускать, контекст можно подписать самому - тем секретом, что лежит в вашем `.env`:
 
 ```bash
-go run ./server -sign                                                   # гостевой контекст
-go run ./server -sign -sign-user <uuid> -sign-scope phone:read          # контекст абонента
+# гостевой контекст
+go run ./server -sign
+
+# контекст абонента
+go run ./server -sign -sign-user <uuid> -sign-scope phone:read
 ```
 
 ```bash
 go run ./server -sign \
-  | python3 -c 'import sys, urllib.parse; print("http://localhost:8080/app/#tsaWebAppData=" + urllib.parse.quote(sys.stdin.read().strip(), safe=""))'
+  | python3 -c 'import sys, urllib.parse
+print("http://localhost:8080/app/#tsaWebAppData="
+  + urllib.parse.quote(sys.stdin.read().strip(), safe=""))'
 ```
 
 Первая команда печатает готовую строку контекста и завершается. Вторая сразу печатает готовый адрес для открытия. Мини-апка отправит контекст своему бэкенду, тот проверит подпись и покажет, кто пришёл.

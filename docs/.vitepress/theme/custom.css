@@ -1,0 +1,7 @@
+/* Long commands and encoded URLs wrap instead of hiding behind a horizontal
+   scroll: the reader sees the whole line without dragging. */
+.vp-doc div[class*='language-'] pre,
+.vp-doc div[class*='language-'] code {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
