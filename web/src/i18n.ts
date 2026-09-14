@@ -1,7 +1,7 @@
-// Screen strings in three languages. The launch context does not carry the
-// app language, so the visitor picks one and the choice lives in localStorage.
-// A dictionary is enough for a screen this size; swap it for vue-i18n when
-// the mini app grows.
+// Screen strings in three languages. The first visit follows the app language
+// from the bridge; a choice made in the switcher lives in localStorage and
+// wins afterwards. A dictionary is enough for a screen this size; swap it for
+// vue-i18n when the mini app grows.
 import { computed, ref } from 'vue';
 
 export type Lang = 'ru' | 'kk' | 'en';
@@ -143,22 +143,29 @@ const strings = {
 
 export type Strings = (typeof strings)[Lang];
 
-function readStored(): Lang {
-  try {
-    const value = localStorage.getItem(STORAGE_KEY);
-    if (value === 'ru' || value === 'kk' || value === 'en') return value;
-  } catch {
-    // Storage may be blocked inside some web views; fall back to the default.
-  }
-  return DEFAULT_LANG;
+export function isLang(value: unknown): value is Lang {
+  return value === 'ru' || value === 'kk' || value === 'en';
 }
 
-export const lang = ref<Lang>(readStored());
+/** The language the visitor picked in the switcher, if any. */
+export function storedLang(): Lang | null {
+  try {
+    const value = localStorage.getItem(STORAGE_KEY);
+    if (isLang(value)) return value;
+  } catch {
+    // Storage may be blocked inside some web views; treat it as no choice.
+  }
+  return null;
+}
+
+export const lang = ref<Lang>(storedLang() ?? DEFAULT_LANG);
 document.documentElement.lang = lang.value;
 
-export function setLang(code: Lang) {
+/** Switch the screen language. Only a choice made by the visitor is remembered. */
+export function setLang(code: Lang, remember = true) {
   lang.value = code;
   document.documentElement.lang = code;
+  if (!remember) return;
   try {
     localStorage.setItem(STORAGE_KEY, code);
   } catch {

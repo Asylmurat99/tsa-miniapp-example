@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue';
-import { lang, languages, setLang, t } from './i18n';
-import { inShell, readInitData, requestPhone, stripFragment } from './tsa';
+import { isLang, lang, languages, setLang, storedLang, t } from './i18n';
+import { hostLanguage, inShell, readInitData, requestPhone, stripFragment } from './tsa';
 
 type Session = { auth: 'customer' | 'guest'; user_id: string | null; scope: string[] };
 type MessageKey = 'rejected' | 'openFromApp' | 'onlyInsideApp' | 'backendRejected' | 'unavailable' | 'denied';
@@ -34,6 +34,11 @@ async function api<T>(path: string, init?: RequestInit): Promise<T> {
 onMounted(async () => {
   const initData = readInitData();
   stripFragment();
+  // First visit follows the app language; a choice made in the switcher wins.
+  if (!storedLang()) {
+    const host = await hostLanguage();
+    if (isLang(host)) setLang(host, false);
+  }
   try {
     if (initData) {
       session.value = await api<Session>('/api/session', {

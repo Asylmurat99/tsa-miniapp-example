@@ -41,6 +41,20 @@ export function inShell(): boolean {
   return bridge.isSupported();
 }
 
+/**
+ * The language the app itself is showing. The launch context does not carry
+ * it, so this is how the first screen comes up in the right language. Null
+ * outside the app or when the call fails.
+ */
+export async function hostLanguage(): Promise<string | null> {
+  if (!inShell()) return null;
+  try {
+    return (await bridge.getLanguage()).language;
+  } catch {
+    return null;
+  }
+}
+
 // #region phone
 export type PhoneOutcome =
   | { kind: 'envelope'; envelope: GetPhoneResponse }
