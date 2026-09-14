@@ -10,4 +10,4 @@
 | 09.2026 | Описаны исходы `getPhone` и поведение `supports()` |
 | 09.2026 | Номер из `getPhone` объявлен изменяемым: ключ учётной записи - `user.id` |
 | 09.2026 | Адрес мини-апки для разработки должен быть постоянным, быстрый туннель не принимается |
-| 09.2026 | Список методов моста сверен с приложением: работают `getLanguage`, `checkBiometry`, `openSettings`; `getGeo` и `setLanguage` отвечают `PERMISSION_DENIED`; `getInitData` в мосте нет |
+| 09.2026 | Список методов моста сверен с приложением: работают `getLanguage` и `checkBiometry`; `getGeo` и `setLanguage` отвечают `PERMISSION_DENIED`; `getInitData` в мосте нет |

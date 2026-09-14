@@ -21,7 +21,6 @@ npm install @indigico/tsa-bridge@2.3.0
 | [`openExternalUrl(url)`](/bridge/system) | Открыть ссылку во внешнем браузере |
 | [`share(text)`](/bridge/system) | Системное меню «Поделиться» |
 | [`copyToClipboard(text)`](/bridge/system) | Копирование в буфер |
-| [`openSettings()`](/bridge/system) | Системные настройки приложения Telecom |
 | [`getLanguage()`](/bridge/system) | Язык интерфейса приложения и список поддерживаемых |
 | [`checkBiometry()`](/bridge/system) | Системный диалог биометрии. Результат - только для интерфейса |
 | [`storage.setItem` / `getItem` / `clear`](/bridge/storage) | Локальное хранилище, своё у каждой мини-апки |
@@ -48,6 +47,7 @@ npm install @indigico/tsa-bridge@2.3.0
 | `setTitle` | `"success"`, заголовок не меняется |
 | `setHeaderMenuItems` | `"success"`, меню не появляется |
 | `shareFile` / `shareImage` | `"not_implemented"` |
+| `openSettings` | `"not_implemented"` |
 | `vibrate` | `null` |
 | `openPayment` | `"not_implemented"` |
 | `readNFCData` | Ошибка `readNFCData not implemented` |
