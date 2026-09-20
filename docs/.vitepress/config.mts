@@ -44,6 +44,12 @@ export default defineConfig({
         ],
       },
       {
+        text: 'Серверные методы (S2S)',
+        items: [
+          { text: 'pushSend', link: '/server/push-send' },
+        ],
+      },
+      {
         text: 'Разработка',
         items: [
           { text: 'Отладка', link: '/debugging' },
